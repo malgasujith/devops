@@ -1,0 +1,28 @@
+FROM openjdk:17.0.1-jdk-slim
+
+# Set working directory
+WORKDIR /home/ubuntu
+
+# Install dependencies
+RUN apt-get update && apt-get install -y git maven
+
+# Clone Spring Petclinic and build the jar
+RUN mkdir spring && \
+    cd spring && \
+    git clone https://github.com/spring-projects/spring-petclinic.git && \
+    cd spring-petclinic && \
+    mvn package
+
+# Expose the port the application runs on
+EXPOSE 8080
+
+# Run the jar file
+CMD ["java", "-jar", "/home/ubuntu/spring/spring-petclinic/target/spring-petclinic-3.4.0-SNAPSHOT.jar"]
+
+
+
+
+
+
+
+
