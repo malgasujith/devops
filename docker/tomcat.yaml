@@ -1,2 +1,0 @@
-kubectl delete -f tomcat.yaml
-kubectl apply -f tomcat.yaml
