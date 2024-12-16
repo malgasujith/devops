@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auditlogservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: auditlogservice
+  template:
+    metadata:
+      labels:
+        name: auditlogservice
+    spec:
+      containers:
+        - name: auditlogservice
+          image: pitstop/auditlogservice:1.0
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+               cpu: "2000m"
+               memory: "2500Mi"
+          env:
+           - name: DOTNET_ENVIRONMENT
+             value: "Production"
+          
+                  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auditlogservice
+spec:
+  selector:
+    name: auditlogservice
+  ports:
+   - name: http
+     port: 80
+     targetPort: 80 
+
+---
+ 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+   name: auditlogservice
+spec:
+  rules:
+   - host: audit-example.com  
+     http:
+        paths: 
+         -  path: Prefix
+            pathType: /foo/bar
+            backend:
+               service:
+                  name: auditlogservice
+                  port: 
+                    name: auditlogs
+                    number: 80
+           

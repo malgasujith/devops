@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: managed
+  selector:
+    matchLabels:
+         name: rabbitmq  
+  resources:
+    requests:
+      storage: 5Gi

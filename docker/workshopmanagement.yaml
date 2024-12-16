@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workshopmanagementeventhandler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: workshopmanagementeventhandler
+  template:
+    metadata:
+      labels:
+        name: workshopmanagementeventhandler
+    spec:
+      containers:
+       - name: workshopmanagementeventhandler
+         image: pitstop/workshopmanagementeventhandler:1.0
+         ports:
+            - containerPort: 80
+         env:
+          - name: DOTNET_ENVIRONMENT
+            value: "Production"
+         resources:
+            limits:
+              cpu: "2500m"
+              memory: "4200Mi"
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workshopmanagementeventhandler
+spec:
+  selector:
+    name: workshopmanagementeventhandler
+  ports:
+   - name: http
+     port: 80
+     targetPort: 80 
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+   name: workshopmanagementeventhandler
+spec:
+  rules:
+   - host: workshopmanagementeventhandler-example.com  
+     http:
+        paths: 
+         -  path: Prefix
+            pathType: /foo/bar
+            backend:
+               service:
+                  name: workshopmanagementeventhandler   
+                  port: 
+                    name: workshopmanagementeventhandler 
+                    number: 80

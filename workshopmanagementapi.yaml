@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: workshopmanagementapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workshopmanagementapi
+  template:
+    metadata:
+      labels:
+        app: workshopmanagementapi
+    spec:
+      containers:
+      - name: workshopmanagementapi
+        image: pitstop/workshopmanagementapi:1.0
+        ports:
+        - containerPort: 5200
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        resources:
+            limits:
+              cpu: "2500m"
+              memory: "4200Mi"
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: workshopmanagementapi
+spec:
+  ports:
+  - name: http
+    port: 5200
+    targetPort: 5200
+  selector:
+    app: workshopmanagementapi
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+   name: workshopmanagementapi
+spec:
+  rules:
+   - host: workshopmanagementapi-example.com  
+     http:
+        paths: 
+         -  path: Prefix
+            pathType: /foo/bar
+            backend:
+               service:
+                  name: workshopmanagementapi   
+                  port: 
+                    name: workshopmanagementapi 
+                    number: 80

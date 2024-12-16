@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoiceservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: invoiceservice
+  template:
+    metadata:
+      labels:
+        name: invoiceservice
+    spec:
+      containers:
+        - name: invoiceservice
+          image: pitstop/invoiceservice:1.0
+          ports:
+            - containerPort: 80
+          env:
+           - name: DOTNET_ENVIRONMENT
+             value: "Production"
+          resources:
+           limits:
+             cpu: "2000m"
+             memory: "1500Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoiceservice
+spec:
+  selector:
+    name: invoiceservice
+  ports:
+   - name: http
+     port: 80
+     targetPort: 80 
+  
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+   name: invoiceservice
+spec:
+  rules:
+   - host: invoice-example.com  
+     http:
+        paths: 
+         -  path: Prefix
+            pathType: /foo/bar
+            backend:
+               service:
+                  name:  invoiceservice
+                  port: 
+                    name: auditlogs
+                    number: 80
+           
