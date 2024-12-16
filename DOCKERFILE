@@ -1,0 +1,25 @@
+ARG BASE_IMAGE=openjdk:17.0.1-jdk-slim
+ARG SPRING_PETCLINIC_REPO=https://github.com/spring-projects/spring-petclinic.git
+ARG SPRING_PETCLINIC_DIR=spring-petclinic
+ARG JAR_PATH=/home/ubuntu/spring/spring-petclinic/target/spring-petclinic.jar
+
+
+FROM ${BASE_IMAGE}
+
+ENV SPRING_PETCLINIC_REPO=${SPRING_PETCLINIC_REPO}
+ENV SPRING_PETCLINIC_DIR=${SPRING_PETCLINIC_DIR}
+
+
+RUN apt-get update -y && apt-get install -y maven git
+
+
+WORKDIR /home/ubuntu
+
+RUN mkdir spring && cd spring && git clone ${SPRING_PETCLINIC_REPO} && \
+    cd ${SPRING_PETCLINIC_DIR} && mvn clean package
+
+
+EXPOSE 8080
+
+
+CMD ["java", "-jar", "${JAR_PATH}"]
